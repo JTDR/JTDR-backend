@@ -8,16 +8,29 @@ describe('backend-express-template routes', () => {
   beforeEach(() => {
     return setup(pool);
   });
-  it('GET /cats gets a list of all cats', async() => {
+  it('GET /cats gets a list of all cats', async () => {
     const resp = await request(app).get('/cats');
     expect(resp.status).toEqual(200);
     expect(resp.body).toEqual([
-      { 'id':'1', 'name':'Soup', 'age':3, 'eyes':'blue', 'fur':'tan' },
-      { 'id':'2', 'name':'Cricket', 'age':16, 'eyes':'black', 'fur':'brown' },
-      { 'id':'3', 'name':'Bear', 'age':8, 'eyes':'brown', 'fur':'black' },
-      { 'id':'4', 'name':'Pasta', 'age':1, 'eyes':'yellow', 'fur':'gold' },
-      { 'id':'5', 'name':'Howard', 'age':9, 'eyes':'red', 'fur':'brown' },
-      { 'id':'6', 'name':'Otter', 'age':0, 'eyes':'blue', 'fur':'white' }]);
+      { id: '1', name: 'Soup', age: 3, eyes: 'blue', fur: 'tan' },
+      { id: '2', name: 'Cricket', age: 16, eyes: 'black', fur: 'brown' },
+      { id: '3', name: 'Bear', age: 8, eyes: 'brown', fur: 'black' },
+      { id: '4', name: 'Pasta', age: 1, eyes: 'yellow', fur: 'gold' },
+      { id: '5', name: 'Howard', age: 9, eyes: 'red', fur: 'brown' },
+      { id: '6', name: 'Otter', age: 0, eyes: 'blue', fur: 'white' },
+    ]);
+  });
+
+  it('GET /cats/:id returns a cat by its ID', async () => {
+    const res = await request(app).get('/cats/1');
+    const soup = {
+      id: '1',
+      name: 'Soup',
+      age: 3,
+      eyes: 'blue',
+      fur: 'tan',
+    };
+    expect(res.body).toEqual(soup);
   });
   afterAll(() => {
     pool.end();
