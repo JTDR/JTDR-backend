@@ -48,6 +48,14 @@ describe('backend-express-template routes', () => {
     expect(resp.body.fur).toEqual(cat.fur);
   });
 
+  it('DELETE /api/v1/cats/:id deletes a cat', async () => {
+    const resp = await request(app).delete('/cats/6');
+    expect(resp.status).toBe(200);
+
+    const check = await Cat.getById(6);
+    expect(check).toBeNull();
+  });
+
   afterAll(() => {
     pool.end();
   });
