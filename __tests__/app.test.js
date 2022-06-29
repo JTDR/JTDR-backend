@@ -42,11 +42,12 @@ describe('backend-express-template routes', () => {
       fur: 'black'
     });
     const resp = await request(app).post('/cats').send(cat);
-    expect(res.body.name).toEqual(cat.name);
-    expect(res.body.age).toEqual(cat.age);
-    expect(res.body.eyes).toEqual(cat.eyes);
-    expect(res.body.fur).toEqual(cat.fur);
-  })
+    expect(resp.body.name).toEqual(cat.name);
+    expect(resp.body.age).toEqual(cat.age);
+    expect(resp.body.eyes).toEqual(cat.eyes);
+    expect(resp.body.fur).toEqual(cat.fur);
+  });
+
   afterAll(() => {
     pool.end();
   });
