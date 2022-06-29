@@ -48,12 +48,19 @@ describe('backend-express-template routes', () => {
     expect(resp.body.fur).toEqual(cat.fur);
   });
 
-  it('DELETE /api/v1/cats/:id deletes a cat', async () => {
+  it('DELETE /cats/:id deletes a cat', async () => {
     const resp = await request(app).delete('/cats/6');
     expect(resp.status).toBe(200);
 
     const check = await Cat.getById(6);
     expect(check).toBeNull();
+  });
+
+  it('PUT /cats/:id updates a cat', async () => {
+    const resp = await request(app).put('/cats/1').send({ age: 400 });
+    expect(resp.status).toBe(200);
+    const check = await Cat.getById(1);
+    expect(check.age).toEqual(400);
   });
 
   afterAll(() => {
