@@ -2,6 +2,7 @@ const pool = require('../lib/utils/pool');
 const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
+const Cat = require('../lib/models/Cat');
 // const { agent } = require('supertest');
 
 describe('backend-express-template routes', () => {
@@ -32,6 +33,20 @@ describe('backend-express-template routes', () => {
     };
     expect(res.body).toEqual(soup);
   });
+
+  it('POST /cats should create a new cat', async () => {
+    const cat = new Cat ({
+      name: 'Prince',
+      age: 2,
+      eyes: 'pink',
+      fur: 'black'
+    });
+    const resp = await request(app).post('/cats').send(cat);
+    expect(res.body.name).toEqual(cat.name);
+    expect(res.body.age).toEqual(cat.age);
+    expect(res.body.eyes).toEqual(cat.eyes);
+    expect(res.body.fur).toEqual(cat.fur);
+  })
   afterAll(() => {
     pool.end();
   });
