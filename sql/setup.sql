@@ -1,13 +1,23 @@
 -- Use this file to define your SQL tables
 -- The SQL in this file will be executed when you run `npm run setup-db`
+DROP TABLE IF EXISTS cat_users;
 DROP TABLE IF EXISTS cats;
+
+
+CREATE TABLE cat_users (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  email TEXT NOT NULL,
+  password_hash TEXT NOT NULL
+);
 
 CREATE TABLE cats (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  user_id BIGINT,  
   name VARCHAR NOT NULL,
   age INT,
   eyes VARCHAR,
-  fur VARCHAR
+  fur VARCHAR,
+  FOREIGN KEY (user_id) REFERENCES cat_users(id)
 );
 
 INSERT INTO cats (
