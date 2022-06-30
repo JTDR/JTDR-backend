@@ -3,7 +3,27 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 const Cat = require('../lib/models/Cat');
-// const { agent } = require('supertest');
+const UserService = require('../lib/services/UserService');
+
+const mockUser = {
+  email: 'RandomUser@mock.com',
+  password: '54321',
+};
+
+const signUpAndLogin = async (userProps = {}) => {
+  const password = userProps.password ?? mockUser.password;
+
+  const agent = request.agent(app);
+
+  const user = await UserService.create({ ...mockUser, ...userProps });
+
+  const { email } = user;
+  await agent.post('/api/v1/users/sessions').send({
+    email,
+    password,
+  });
+  return [agent, user];
+};
 
 describe('cats routes', () => {
   beforeEach(() => {
@@ -41,7 +61,8 @@ describe('cats routes', () => {
       eyes: 'pink',
       fur: 'black',
     });
-    const resp = await request(app).post('/api/v1/cats').send(cat);
+    const [agent] = await signUpAndLogin();
+    const resp = await agent.post('/api/v1/cats').send(cat);
     expect(resp.body.name).toEqual(cat.name);
     expect(resp.body.age).toEqual(cat.age);
     expect(resp.body.eyes).toEqual(cat.eyes);
@@ -49,7 +70,8 @@ describe('cats routes', () => {
   });
 
   it('DELETE /cats/:id deletes a cat', async () => {
-    const resp = await request(app).delete('/api/v1/cats/6');
+    const [agent] = await signUpAndLogin();
+    const resp = await agent.delete('/api/v1/cats/6');
     expect(resp.status).toBe(200);
 
     const check = await Cat.getById(6);
@@ -57,7 +79,8 @@ describe('cats routes', () => {
   });
 
   it('PUT /cats/:id updates a cat', async () => {
-    const resp = await request(app).put('/api/v1/cats/1').send({ age: 400 });
+    const [agent] = await signUpAndLogin();
+    const resp = await agent.put('/api/v1/cats/1').send({ age: 400 });
     expect(resp.status).toBe(200);
     const check = await Cat.getById(1);
     expect(check.age).toEqual(400);
