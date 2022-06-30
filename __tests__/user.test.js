@@ -39,6 +39,22 @@ describe('user routes', () => {
     });
   });
 
+  it('logs in a created user', async () => {
+    const res = await request(app).post('/api/v1/users').send(mockUser);
+    const { email } = mockUser;
+
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      email,
+    });
+    const res1 = await request(app)
+      .post('/api/v1/users/sessions')
+      .send(mockUser);
+
+    expect(res1.status).toEqual(200);
+    expect(res1.body.message).toEqual('Successfully signed in');
+  });
+
   afterAll(() => {
     pool.end();
   });
