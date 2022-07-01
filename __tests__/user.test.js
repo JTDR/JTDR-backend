@@ -55,6 +55,22 @@ describe('user routes', () => {
     expect(res1.body.message).toEqual('Successfully signed in');
   });
 
+  it('returns the current user', async () => {
+    const [agent, user] = await signUpAndLogin();
+    const me = await agent.get('/api/v1/users/me');
+    expect(me.body).toEqual({
+      ...user,
+      exp: expect.any(Number),
+      iat: expect.any(Number),
+    });
+  });
+
+  it('DELETE /sessions deletes the user session', async () => {
+    const [agent] = await signUpAndLogin();
+    const resp = await agent.delete('/api/v1/users/sessions');
+    expect(resp.status).toBe(204);
+  });
+
   afterAll(() => {
     pool.end();
   });

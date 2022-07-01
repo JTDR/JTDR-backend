@@ -30,7 +30,8 @@ describe('cats routes', () => {
     return setup(pool);
   });
   it('GET /cats gets a list of all cats', async () => {
-    const resp = await request(app).get('/api/v1/cats');
+    const [agent] = await signUpAndLogin();
+    const resp = await agent.get('/api/v1/cats');
     expect(resp.status).toEqual(200);
     expect(resp.body).toEqual([
       { id: '3', name: 'Bear', age: 8, eyes: 'brown', fur: 'black' },
@@ -43,7 +44,8 @@ describe('cats routes', () => {
   });
 
   it('GET /cats/:id returns a cat by its ID', async () => {
-    const res = await request(app).get('/api/v1/cats/1');
+    const [agent] = await signUpAndLogin();
+    const res = await agent.get('/api/v1/cats/1');
     const soup = {
       id: '1',
       name: 'Soup',
